@@ -1,26 +1,49 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
-import { UpdatePurchaseOrderDto } from './dto/update-purchase-order.dto';
+import { Connection } from 'typeorm';
+import { User } from '../user/entities/user.entity';
+import { Dish } from '../dish/entities/dish.entity';
+import { PurchaseOrder } from './entities/purchase-order.entity';
+import * as moment from 'moment';
+import { Restaurant } from '../restaurant/entities/restaurant.entity';
 
 @Injectable()
 export class PurchaseOrderService {
-  create(createPurchaseOrderDto: CreatePurchaseOrderDto) {
-    return 'This action adds a new purchaseOrder';
-  }
+  constructor(private connection: Connection) {}
 
-  findAll() {
-    return `This action returns all purchaseOrder`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} purchaseOrder`;
-  }
-
-  update(id: number, updatePurchaseOrderDto: UpdatePurchaseOrderDto) {
-    return `This action updates a #${id} purchaseOrder`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} purchaseOrder`;
+  async placeOrder(user: User, dish: Dish): Promise<PurchaseOrder | null> {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const purchaseOrder = new PurchaseOrder();
+    purchaseOrder.dish = dish;
+    purchaseOrder.user = user;
+    purchaseOrder.restaurant = dish.restaurant;
+    purchaseOrder.dish_name = dish.name;
+    purchaseOrder.restaurant_name = dish.restaurant.name;
+    purchaseOrder.transaction_amount = dish.price;
+    purchaseOrder.transaction_date = moment().toDate();
+    try {
+      await queryRunner.manager.save(purchaseOrder);
+      await queryRunner.manager.decrement(
+        User,
+        { id: user.id },
+        'cash_balance',
+        dish.price,
+      );
+      await queryRunner.manager.increment(
+        Restaurant,
+        { id: dish.restaurant.id },
+        'cash_balance',
+        dish.price,
+      );
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      return null;
+    } finally {
+      await queryRunner.release();
+      return purchaseOrder;
+    }
   }
 }
