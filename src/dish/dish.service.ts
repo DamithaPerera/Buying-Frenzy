@@ -9,6 +9,7 @@ export class DishService {
     @InjectRepository(Dish)
     private dishRepository: Repository<Dish>,
   ) {}
+
   getById(id: string): Promise<Dish> {
     return this.dishRepository.findOneBy({ id });
   }
