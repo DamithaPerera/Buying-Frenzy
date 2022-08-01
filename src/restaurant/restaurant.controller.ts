@@ -20,7 +20,7 @@ export class RestaurantController {
     status: 200,
     description: 'Get restaurants which opens at certain time.',
   })
-  async getRestaurants(
+  async getRestaurantsController(
     @Query('opens_at') opensAt: Date,
   ): Promise<Restaurant[]> {
     return this.restaurantService.getRestaurantsOpensAt(opensAt);
@@ -41,7 +41,7 @@ export class RestaurantController {
     status: 200,
     description: ' Fetch restaurants by price range and dishes count.',
   })
-  async getRestaurantsFilterByPrice(
+  async getRestaurantsFilterByPriceController(
     @Query('from_price') fromPrice: number,
     @Query('to_price') toPrice: number,
     @Query('dishes') dishes: number,
@@ -67,7 +67,7 @@ export class RestaurantController {
     status: 200,
     description: ' Fetch restaurants which opens at certain time.',
   })
-  async getResultBySearch(
+  async getResultBySearchController(
     @Query('keyword') keyword: string,
     @Query('type') type: searchType,
   ): Promise<Restaurant[] | Dish[]> {

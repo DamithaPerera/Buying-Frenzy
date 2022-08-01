@@ -10,7 +10,6 @@ import {
 import { UserService } from '../user/user.service';
 import { DishService } from '../dish/dish.service';
 
-
 @Controller('/v1/purchase-order')
 export class PurchaseOrderController {
   constructor(
@@ -21,7 +20,7 @@ export class PurchaseOrderController {
 
   @Post()
   @ApiNotFoundResponse({ description: 'If user or dish not exist!' })
-  @ApiBadRequestResponse({ description: 'You have unsufficent balance!' })
+  @ApiBadRequestResponse({ description: 'You have insufficient balance!' })
   @ApiInternalServerErrorResponse({
     description: 'Something went wrong while place order!',
   })
@@ -43,7 +42,7 @@ export class PurchaseOrderController {
     if (dish.price > user.cash_balance) {
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .send('You have unsufficent balance!');
+        .send('You have insufficient balance!');
     }
     const purchaseOrder = await this.purchaseOrderService.placeOrder(
       user,
