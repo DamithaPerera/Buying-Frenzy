@@ -5,12 +5,14 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Buying Frenzy')
     .setDescription('Buying Frenzy API Collection')
     .setVersion('1.0')
-    .addTag('buying_frenzy')
+    .addTag('buying-frenzy')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

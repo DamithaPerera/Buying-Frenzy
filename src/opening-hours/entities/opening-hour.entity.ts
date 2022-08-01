@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 
-// const WeekDays = ['SUN', 'MON', 'TUES', 'WED', 'THUS', 'FRI', 'SAT'];
+const WeekDays = ['SUN', 'MON', 'TUES', 'WED', 'THUS', 'FRI', 'SAT'];
 @Unique('opening_hours_unique_for_each_day', ['restaurant', 'weekday'])
 @Entity()
 export class OpeningHour extends BaseEntity {
