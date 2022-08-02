@@ -5,6 +5,9 @@
   "author": "Damitha Perera",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "14.17.6"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
